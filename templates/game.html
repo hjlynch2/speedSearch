@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game</title>
+</head>
+<body>
+    <h1>Welcome to the game {{ username }} </h1>
+    {% if admin: %}
+    <a href = {% print url_for('admin') %}>Admin links</a>
+    {% endif %}
+</body>
+</html>

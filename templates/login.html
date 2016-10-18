@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log In</title>
+</head>
+<body>
+    <h1>Log in below!</h1>
+    {% if invalid: %}
+        <h2 style="color:red">Invalid Credentials</h2>
+    {% endif %}
+    <form method='POST' action='/LogIn'>
+        <input type="text" name="username" placeholder="Username">
+        <input type="password" name="password" placeholder="Enter Password">
+        <button type="submit">Log In</button>
+    </form>
+</body>
+</html>

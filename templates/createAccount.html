@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Account</title>
+</head>
+<body>
+    <h1>Create an account below!</h1>
+    {% if alreadyExists: %}
+        <h2 style="color:red">That username already exists you idiot</h2>
+    {% endif %}
+    {% if invalidPassword: %}
+        <h2 style="color:red">Password didn't meet the length requirement you fool</h2>
+    {% endif %}
+    <h3>Password must be at least 6 characters long</h3>
+    <form method='POST' action='/CreateAccount'>
+        <input type="text" name="username" placeholder="Username">
+        <input type="password" name="password" placeholder="Enter Password">
+        <button type="submit">Create Account</button>
+    </form>
+</body>
+</html>
