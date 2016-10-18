@@ -7,7 +7,8 @@
 <body>
     <h1>Welcome to the game {{ username }} </h1>
     {% if admin: %}
-    <a href = {% print url_for('admin') %}>Admin links</a>
+    <a href = {% print url_for('admin') %}>Admin links</a></br>
     {% endif %}
+    <a href="../">Go Home</a>
 </body>
 </html>
