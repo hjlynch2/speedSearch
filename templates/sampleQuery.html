@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sample Query</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+    <h3>Search for Admins on the website</h3>
+    <form method="POST" action="/SampleQuery">
+        <input type="text" name="username" placeholder="Search by username">
+        <input type="submit" value="Search">
+    </form>
+    <br/>
+    {% if not admins == None: %}
+        Query Executed    -----     {{ query }}
+        <h4>Results:</h4>
+        <table>
+        <tr>
+            <td>User ID</td>
+            <td>Username</td>
+        </tr>
+        {% for admin in admins: %}
+            <tr>
+                <td>{{ admin[0] }}</td>
+                <td>{{ admin[1] }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% endif %}
+    <h4>Query Explanation: </h4>
+    <p>
+        This query allows you to search for the admins of this website by their username. You can see the query that you
+        are executing and its results above.
+    </p>
+</body>
+</html>

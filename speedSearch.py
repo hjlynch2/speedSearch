@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_mysqldb import MySQL
+import sys
 
 app = Flask(__name__)
 
@@ -72,18 +73,85 @@ def game():
     return render_template('game.html', username=username, admin=admin)
 
 
+@app.route('/Users')
+def get_users():
+    cur = mysql.connection.cursor()
+    query = 'SELECT user_id, username FROM Users'
+    cur.execute(query)
+    users = cur.fetchall()
+    print users
+    cur.close()
+    return users
+
+@app.route('/Users/getUserInfo')
+def get_user_info(user_id):
+    cur = mysql.connection.cursor()
+    query = 'SELECT username, password, admin FROM Users WHERE user_id = ' + user_id
+    cur.execute(query)
+    userInfo = cur.fetchall()
+    cur.close()
+    return userInfo
+
+@app.route('/Admin', methods=['GET','POST'])
 @app.route('/Admin', methods=['GET', 'POST'])
 def admin():
-    return render_template('admin.html')
+    users = get_users()
+    return render_template('admin.html', users = users)
 
 
-@app.route('/select')
-def select():
+@app.route('/Admin/Select', methods=['GET','POST'])
+def adminSelect():
     cur = mysql.connection.cursor()
-    cur.execute('''SELECT * FROM testing''')
+    if request.method == 'POST':
+        operation = request.form['operationSelection']
+        user_id = request.form['userSelection']
+        if operation == "delete":
+            cur.close()
+            return redirect(url_for('adminDelete', user_id=user_id))
+        else:
+            return redirect(url_for('adminUpdate', user_id = user_id))
+    else:
+        cur.close()
+        users = get_users()
+        return redirect(url_for('admin', users = users))
+
+
+@app.route('/Admin/Delete', methods=['GET','POST'])
+def adminDelete():
+    user_id = request.args['user_id']
+    return render_template('deleteUser.html', user_id = user_id)
+
+
+@app.route('/Admin/Update', methods=['GET','POST'])
+def adminUpdate():
+    # if request = post
+    # else
+    '''
+    user_id = request.args['user_id']
+    userInfo = get_user_info(user_id)
+    return render_template('updateUser.html', userInfo = userInfo)
+
+    cur.execute(SELECT * FROM testing)
     rv = cur.fetchall()
     cur.close()
     return str(rv)
+    '''
+    return None
+
+
+@app.route('/SampleQuery', methods=['GET','POST'])
+def sampleQuery():
+    cur = mysql.connection.cursor()
+    conn = mysql.connection
+    admins = None
+    query = ""
+    if request.method == 'POST':
+        username = request.form['username']
+        query = 'SELECT user_id, username FROM Users WHERE username LIKE "%' + username + '%" AND admin = 1'
+        cur.execute(query)
+        admins = cur.fetchall()
+        cur.close()
+    return render_template('sampleQuery.html', admins = admins, query=query)
 
 
 if __name__ == '__main__':
