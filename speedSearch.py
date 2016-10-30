@@ -79,21 +79,19 @@ def get_users():
     query = 'SELECT user_id, username FROM Users'
     cur.execute(query)
     users = cur.fetchall()
-    print users
     cur.close()
     return users
 
 @app.route('/Users/getUserInfo')
 def get_user_info(user_id):
     cur = mysql.connection.cursor()
-    query = 'SELECT username, password, admin FROM Users WHERE user_id = ' + user_id
+    query = 'SELECT user_id, username, admin FROM Users WHERE user_id = ' + user_id
     cur.execute(query)
     userInfo = cur.fetchall()
     cur.close()
     return userInfo
 
 @app.route('/Admin', methods=['GET','POST'])
-@app.route('/Admin', methods=['GET', 'POST'])
 def admin():
     users = get_users()
     return render_template('admin.html', users = users)
@@ -101,42 +99,62 @@ def admin():
 
 @app.route('/Admin/Select', methods=['GET','POST'])
 def adminSelect():
-    cur = mysql.connection.cursor()
     if request.method == 'POST':
-        operation = request.form['operationSelection']
-        user_id = request.form['userSelection']
+        operation = request.form['operation']
+        user_id = request.form['user']
         if operation == "delete":
-            cur.close()
-            return redirect(url_for('adminDelete', user_id=user_id))
+            return redirect(url_for('adminDelete', user_id = user_id))
         else:
-            return redirect(url_for('adminUpdate', user_id = user_id))
+            return redirect(url_for('adminEdit', user_id = user_id))
     else:
-        cur.close()
         users = get_users()
         return redirect(url_for('admin', users = users))
 
 
 @app.route('/Admin/Delete', methods=['GET','POST'])
 def adminDelete():
-    user_id = request.args['user_id']
-    return render_template('deleteUser.html', user_id = user_id)
+    if request.method == 'POST':
+        toDelete = request.form['delete']
+        if toDelete == 'no':
+            return redirect(url_for('admin'))
+        else:
+            user_id = request.form['user_id']
+            cur = mysql.connection.cursor()
+            conn = mysql.connection
+            query = 'DELETE FROM Users Where user_id = ' + user_id
+            cur.execute(query)
+            conn.commit()
+            cur.close()
+            return redirect(url_for('admin'))
+    else:
+        user_id = request.args['user_id']
+        user_info = get_user_info(user_id)
+        return render_template('deleteUser.html', user_info=user_info[0])
 
 
-@app.route('/Admin/Update', methods=['GET','POST'])
-def adminUpdate():
-    # if request = post
-    # else
-    '''
-    user_id = request.args['user_id']
-    userInfo = get_user_info(user_id)
-    return render_template('updateUser.html', userInfo = userInfo)
-
-    cur.execute(SELECT * FROM testing)
-    rv = cur.fetchall()
-    cur.close()
-    return str(rv)
-    '''
-    return None
+@app.route('/Admin/Edit', methods=['GET','POST'])
+def adminEdit():
+    if request.method == 'POST':
+        newAdmin = request.form['adminRights']
+        user_id = request.form['user_id']
+        cur = mysql.connection.cursor()
+        conn = mysql.connection
+        if newAdmin == 'no':
+            query = 'UPDATE Users SET admin = 0 WHERE user_id = ' + user_id
+            cur.execute(query)
+            conn.commit()
+            cur.close()
+            return redirect(url_for('admin'))
+        else:
+            query = 'UPDATE Users SET admin = 1 WHERE user_id = ' + user_id
+            cur.execute(query)
+            conn.commit()
+            cur.close()
+            return redirect(url_for('admin'))
+    else:
+        user_id = request.args['user_id']
+        user_info = get_user_info(user_id)
+        return render_template('updateUser.html', user_info=user_info[0])
 
 
 @app.route('/SampleQuery', methods=['GET','POST'])

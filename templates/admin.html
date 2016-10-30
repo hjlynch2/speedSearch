@@ -5,11 +5,18 @@
     <title>Admin</title>
 </head>
 <body>
-    <ul>
-        <li><a href = "#">Edit Privileges</a></li>
-        <li><a href = "#">Create User</a></li>
-        <li><a href = "#">Edit User</a></li>
-        <li><a href = "#">Delete User</a></li>
-    </ul>
+    <h2>Select a user to edit or delete</h2>
+    <form action="/Admin/Select" method="post">
+        <select name="user">
+            {% for user in users %}
+                <option value="{{ user[0] }}">{{ user[1] }}</option>
+            {% endfor %}
+        </select>
+        <br/><br/>
+        <input type="radio" name="operation" value="edit"> Edit <br/>
+        <input type="radio" name="operation" value="delete"> Delete
+        <br/><br/>
+        <input type="submit" value="Submit">
+    </form>
 </body>
 </html>
