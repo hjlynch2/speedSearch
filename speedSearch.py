@@ -183,7 +183,7 @@ def highscores():
     cur.execute(query)
     scores = cur.fetchall()
     cur.close()
-    return render_template('highScores.html', scores = scores)
+    return render_template('highscores.html', scores = scores)
 
 
 if __name__ == '__main__':
