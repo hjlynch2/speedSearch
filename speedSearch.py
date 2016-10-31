@@ -1,6 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
-import sys
 
 app = Flask(__name__)
 
