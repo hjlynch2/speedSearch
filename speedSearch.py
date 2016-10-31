@@ -171,6 +171,20 @@ def sampleQuery():
         cur.close()
     return render_template('sampleQuery.html', admins = admins, query=query)
 
+@app.route('/highscores', methods=['GET'])
+def highscores():
+    cur = mysql.connection.cursor()
+    conn = mysql.connection
+    admins = None
+    query = """ SELECT u.username, score, s.game_id
+                FROM Scores s 
+                JOIN Users u ON s.user_id = u.user_id 
+                ORDER BY s.score ASC;"""
+    cur.execute(query)
+    scores = cur.fetchall()
+    cur.close()
+    return render_template('highScores.html', scores = scores)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
