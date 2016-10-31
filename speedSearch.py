@@ -36,8 +36,8 @@ def login():
     return render_template('login.html', invalid=invalid)
 
 
-@app.route('/CreateAccount', methods=['GET', 'POST'])
-def createAccount():
+@app.route('/SignUp', methods=['GET', 'POST'])
+def signUp():
     alreadyExists = False
     invalidPassword = False
     cur = mysql.connection.cursor()

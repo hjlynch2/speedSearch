@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Log In</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
 </head>
 <body>
-    <h1>Log in below!</h1>
-    {% if invalid: %}
-        <h2 style="color:red">Invalid Credentials</h2>
-    {% endif %}
-    <form method='POST' action='/LogIn'>
-        <input type="text" name="username" placeholder="Username">
-        <input type="password" name="password" placeholder="Enter Password">
-        <button type="submit">Log In</button>
-    </form>
+    <div class="mid-box" id="log-in">
+        {% if invalid: %}
+            <h3 class="invalid">Invalid Credentials</h3>
+        {% endif %}
+        <form method='POST' action='/LogIn'>
+            <input type="text" name="username" placeholder="Username"><br/>
+            <input type="password" name="password" placeholder="Password"></br><br/>
+            <input type="submit" value="Log in">
+        </form>
+    </div>
 </body>
 </html>

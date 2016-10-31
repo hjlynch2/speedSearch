@@ -2,21 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Account</title>
+    <title>Sign Up</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
 </head>
 <body>
-    <h1>Create an account below!</h1>
-    {% if alreadyExists: %}
-        <h2 style="color:red">That username already exists you idiot</h2>
-    {% endif %}
-    {% if invalidPassword: %}
-        <h2 style="color:red">Password didn't meet the length requirement you fool</h2>
-    {% endif %}
-    <h3>Password must be at least 6 characters long</h3>
-    <form method='POST' action='/CreateAccount'>
-        <input type="text" name="username" placeholder="Username">
-        <input type="password" name="password" placeholder="Enter Password">
-        <button type="submit">Create Account</button>
-    </form>
+    <div class="mid-box" id="sign-up">
+        <h1 class="main-header">Sign Up</h1>
+        {% if alreadyExists: %}
+            <h3 class="invalid">That username already exists</h3>
+        {% endif %}
+        {% if invalidPassword: %}
+            <h3 class="invalid">Password didn't meet the length requirement you fool</h3>
+        {% endif %}
+        <form method='POST' action='/SignUp'>
+            <input type="text" name="username" placeholder="Username"><br/>
+            <input type="password" name="password" placeholder="Password"><br/>
+            <div class="side-note">*Password must be at least 6 characters long</div>
+            <br/><br/>
+            <input type="submit" value="Sign Up">
+        </form>
+    </div>
 </body>
 </html>

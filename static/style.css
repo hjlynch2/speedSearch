@@ -9,3 +9,111 @@ td, tr {
 table, th, td {
     border: 1px solid black;
 }
+
+body {
+    background-color:#F0F8FF;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+input[type=text] {
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px solid white;
+    background-color: #4682B4;
+    color:white;
+    font-size: 20px;
+}
+
+input[type=password] {
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px solid white;
+    background-color: #4682B4;
+    color:white;
+    font-size: 20px;
+}
+
+input[type=submit] {
+    padding:5px 15px;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background-color: white;
+    color: #4682B4;
+    font-size: 18px;
+    font-weight: bolder;
+}
+
+
+.mid-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-70%);
+    background-color: #4682B4;
+    -webkit-box-shadow: 10px 11px 30px -16px rgba(0,0,0,0.68);
+    -moz-box-shadow: 10px 11px 30px -16px rgba(0,0,0,0.68);
+    box-shadow: 10px 11px 30px -16px rgba(0,0,0,0.68);
+    text-align: center;
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.invalid {
+    color: #F08080
+}
+
+.side-note {
+    font-size: 12px;
+}
+
+#welcome {
+    width: 350px;
+	font-weight: 500;
+    height: 280px;
+}
+
+#log-in {
+    width: 300px;
+    padding-bottom: 30px;
+}
+
+#sign-up {
+    width: 300px;
+}
+
+.main-header {
+    font-weight: bolder;
+    font-size: 45px;
+}
+
+.main-link {
+    color:white;
+    text-decoration:none;
+}
+
+a:hover {
+    color: gainsboro;
+}
+
+::-webkit-input-placeholder {
+   color: white;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   color: white;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   color: white;
+}
+
+:-ms-input-placeholder {
+   color: white;
+}

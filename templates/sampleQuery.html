@@ -8,8 +8,8 @@
 <body>
     <h3>Search for Admins on the website</h3>
     <form method="POST" action="/SampleQuery">
-        <input type="text" name="username" placeholder="Search by username">
-        <input type="submit" value="Search">
+        <input type="text" name="username" placeholder="Search by username" id="sample-input"><br/>
+        <input type="submit" value="Search" id="sample-submit">
     </form>
     <br/>
     {% if not admins == None: %}
