@@ -5,10 +5,10 @@ app = Flask(__name__)
 
 
 mysql = MySQL(app)
-app.config['MYSQL_USER'] = 'wcrasta2'
-app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_USER'] = 'admin'
+app.config['MYSQL_PASSWORD'] = 'cs411'
 app.config['MYSQL_DB'] = 'SpeedSearch'
-app.config['MYSQL_HOST'] = 'fa16-cs411-10.cs.illinois.edu'
+app.config['MYSQL_HOST'] = 'fa16-cs411-100.cs.illinois.edu'
 
 
 @app.route('/')

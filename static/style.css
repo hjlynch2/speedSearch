@@ -49,6 +49,12 @@ input[type=submit] {
     font-weight: bolder;
 }
 
+input[type=radio] {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
 
 .mid-box {
     position: absolute;
@@ -88,9 +94,30 @@ input[type=submit] {
     width: 300px;
 }
 
+#game {
+    width: 200px;
+	font-weight: 300;
+    font-size: 30px;
+    padding: 20px;
+}
+
+#admin {
+    width: 450px;
+    padding: 20px;
+}
+
 .main-header {
     font-weight: bolder;
     font-size: 45px;
+}
+
+.smaller-header {
+    font-weight: 500;
+    font-size: 30px;
+}
+
+.radio-option {
+    font-size: 20px;
 }
 
 .main-link {
@@ -116,4 +143,27 @@ a:hover {
 
 :-ms-input-placeholder {
    color: white;
+}
+
+.select-style {
+    border: 1px solid #ccc;
+    width: 200px;
+    border-radius: 3px;
+    overflow: hidden;
+    font-size: 20px;
+    color:#4682B4;
+}
+
+.select-style select {
+    padding: 5px 8px;
+    width: 130%;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+}
+
+.select-style select:focus {
+    outline: none;
 }

@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Game</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
 </head>
 <body>
-    <h1>Welcome to the game {{ username }} </h1>
-    {% if admin: %}
-    <a href = {% print url_for('admin') %}>Admin links</a></br>
-    {% endif %}
-    <a href="/">Go Home</a></br>
-    <a href="/highscores">High Scores</a>
+    <div class="mid-box" id="game">
+        {% if admin %}
+        <a class="main-link" href="{% print url_for('admin') %}">Admin links</a></br>
+        {% endif %}
+        <a class="main-link" href="/highscores">High Scores</a>
+    </div>
 </body>
 </html>
