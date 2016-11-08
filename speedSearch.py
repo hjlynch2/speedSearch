@@ -1,14 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
 
 mysql = MySQL(app)
-app.config['MYSQL_USER'] = 'admin'
-app.config['MYSQL_PASSWORD'] = 'cs411'
+app.config['MYSQL_USER'] = 'wcrasta2'
+app.config['MYSQL_PASSWORD'] = 'password'
 app.config['MYSQL_DB'] = 'SpeedSearch'
-app.config['MYSQL_HOST'] = 'fa16-cs411-100.cs.illinois.edu'
+app.config['MYSQL_HOST'] = 'fa16-cs411-10.cs.illinois.edu'
+app.secret_key = '\x9f\x10{\x9aK>\xd39oUBZhB\x11))/\x05J\xf5?\x1f\x80'
 
 
 @app.route('/')
@@ -29,10 +30,17 @@ def login():
         validLogin = cur.rowcount
         cur.close()
         if validLogin:  # valid credentials
+            session['logged_in'] = True
             return redirect(url_for('game', username=username))
         else:
             invalid = True
     return render_template('login.html', invalid=invalid)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('index'))
 
 
 @app.route('/SignUp', methods=['GET', 'POST'])
@@ -81,6 +89,7 @@ def get_users():
     cur.close()
     return users
 
+
 @app.route('/Users/getUserInfo')
 def get_user_info(user_id):
     cur = mysql.connection.cursor()
@@ -90,27 +99,28 @@ def get_user_info(user_id):
     cur.close()
     return userInfo
 
-@app.route('/Admin', methods=['GET','POST'])
+
+@app.route('/Admin', methods=['GET', 'POST'])
 def admin():
     users = get_users()
-    return render_template('admin.html', users = users)
+    return render_template('admin.html', users=users)
 
 
-@app.route('/Admin/Select', methods=['GET','POST'])
+@app.route('/Admin/Select', methods=['GET', 'POST'])
 def adminSelect():
     if request.method == 'POST':
         operation = request.form['operation']
         user_id = request.form['user']
         if operation == "delete":
-            return redirect(url_for('adminDelete', user_id = user_id))
+            return redirect(url_for('adminDelete', user_id=user_id))
         else:
-            return redirect(url_for('adminEdit', user_id = user_id))
+            return redirect(url_for('adminEdit', user_id=user_id))
     else:
         users = get_users()
-        return redirect(url_for('admin', users = users))
+        return redirect(url_for('admin', users=users))
 
 
-@app.route('/Admin/Delete', methods=['GET','POST'])
+@app.route('/Admin/Delete', methods=['GET', 'POST'])
 def adminDelete():
     if request.method == 'POST':
         toDelete = request.form['delete']
@@ -131,7 +141,7 @@ def adminDelete():
         return render_template('deleteUser.html', user_info=user_info[0])
 
 
-@app.route('/Admin/Edit', methods=['GET','POST'])
+@app.route('/Admin/Edit', methods=['GET', 'POST'])
 def adminEdit():
     if request.method == 'POST':
         newAdmin = request.form['adminRights']
@@ -156,7 +166,7 @@ def adminEdit():
         return render_template('updateUser.html', user_info=user_info[0])
 
 
-@app.route('/SampleQuery', methods=['GET','POST'])
+@app.route('/SampleQuery', methods=['GET', 'POST'])
 def sampleQuery():
     cur = mysql.connection.cursor()
     conn = mysql.connection
@@ -168,7 +178,8 @@ def sampleQuery():
         cur.execute(query)
         admins = cur.fetchall()
         cur.close()
-    return render_template('sampleQuery.html', admins = admins, query=query)
+    return render_template('sampleQuery.html', admins=admins, query=query)
+
 
 @app.route('/highscores', methods=['GET'])
 def highscores():
@@ -182,7 +193,7 @@ def highscores():
     cur.execute(query)
     scores = cur.fetchall()
     cur.close()
-    return render_template('highscores.html', scores = scores)
+    return render_template('highscores.html', scores=scores)
 
 
 if __name__ == '__main__':
