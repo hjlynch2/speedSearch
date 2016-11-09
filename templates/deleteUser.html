@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Delete User</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css?v=7">
 </head>
 <body>
-    <h3>Are you sure you want to delete user {{ user_info[1] }}</h3>
-    <form method="post" action="/admin/delete">
-        <input type="hidden" name="user_id" value="{{ user_info[0] }}">
-        <input type="radio" name="delete" value="no"> No, I'm sorry please take me back <br/>
-        <input type="radio" name="delete" value="yes"> Yes please get rid of this scum <br/><br/>
-        <input type="submit">
-    </form>
-    </br>
-    <a href="/"><button type="button" class="btn btn-primary">Go Home</button></a>
+    <div class="mid-box" id="delete-user">
+        <h3 id="delete-header">Are you sure you want to delete user {{ user_info[1] }}?</h3>
+        <form method="post" action="/admin/delete">
+            <input type="hidden" name="user_id" value="{{ user_info[0] }}">
+            <input type="radio" name="delete" value="no"> <label class="radio-option"> No, I'm sorry please take me back </label> <br/>
+            <input type="radio" name="delete" value="yes"> <label class="radio-option"> Yes please get rid of this scum </label> <br/><br/>
+            <input type="submit">
+        </form>
+        </br>
+        <a href="/"><button type="button" class="btn btn-primary">Go Home</button></a>
+    </div>
 </body>
 </html>

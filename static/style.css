@@ -45,7 +45,7 @@ input[type=submit] {
     border-radius: 5px;
     background-color: white;
     color: #4682B4;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bolder;
 }
 
@@ -82,7 +82,8 @@ input[type=radio] {
 #welcome {
     width: 350px;
 	font-weight: 500;
-    height: 280px;
+    height: 200px;
+    padding:20px;
 }
 
 #log-in {
@@ -104,6 +105,24 @@ input[type=radio] {
 #admin {
     width: 450px;
     padding: 20px;
+}
+
+#delete-user {
+    width: 450px;
+    padding: 20px;
+}
+
+#update-user {
+    width: 370px;
+    padding: 20px;
+}
+
+#update-header {
+    font-size: 25px;
+}
+
+#delete-header {
+    font-size: 25px;
 }
 
 .main-header {
