@@ -17,7 +17,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/LogIn', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     invalid = False
     if request.method == 'POST':
@@ -43,7 +43,7 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/SignUp', methods=['GET', 'POST'])
+@app.route('/signup', methods=['GET', 'POST'])
 def signUp():
     alreadyExists = False
     invalidPassword = False
@@ -68,7 +68,7 @@ def signUp():
     return render_template('createAccount.html', alreadyExists=alreadyExists, invalidPassword=invalidPassword)
 
 
-@app.route('/Game', methods=['GET', 'POST'])
+@app.route('/game', methods=['GET', 'POST'])
 def game():
     username = request.args['username']
     query = """SELECT admin FROM Users WHERE username='{}'""".format(username)
@@ -80,7 +80,7 @@ def game():
     return render_template('game.html', username=username, admin=admin)
 
 
-@app.route('/Users')
+@app.route('/users')
 def get_users():
     cur = mysql.connection.cursor()
     query = 'SELECT user_id, username FROM Users'
@@ -90,7 +90,7 @@ def get_users():
     return users
 
 
-@app.route('/Users/getUserInfo')
+@app.route('/users/getuserinfo')
 def get_user_info(user_id):
     cur = mysql.connection.cursor()
     query = 'SELECT user_id, username, admin FROM Users WHERE user_id = ' + user_id
@@ -100,13 +100,13 @@ def get_user_info(user_id):
     return userInfo
 
 
-@app.route('/Admin', methods=['GET', 'POST'])
+@app.route('/admin', methods=['GET', 'POST'])
 def admin():
     users = get_users()
     return render_template('admin.html', users=users)
 
 
-@app.route('/Admin/Select', methods=['GET', 'POST'])
+@app.route('/admin/select', methods=['GET', 'POST'])
 def adminSelect():
     if request.method == 'POST':
         operation = request.form['operation']
@@ -120,7 +120,7 @@ def adminSelect():
         return redirect(url_for('admin', users=users))
 
 
-@app.route('/Admin/Delete', methods=['GET', 'POST'])
+@app.route('/admin/delete', methods=['GET', 'POST'])
 def adminDelete():
     if request.method == 'POST':
         toDelete = request.form['delete']
@@ -141,7 +141,7 @@ def adminDelete():
         return render_template('deleteUser.html', user_info=user_info[0])
 
 
-@app.route('/Admin/Edit', methods=['GET', 'POST'])
+@app.route('/admin/edit', methods=['GET', 'POST'])
 def adminEdit():
     if request.method == 'POST':
         newAdmin = request.form['adminRights']
@@ -166,10 +166,9 @@ def adminEdit():
         return render_template('updateUser.html', user_info=user_info[0])
 
 
-@app.route('/SampleQuery', methods=['GET', 'POST'])
+@app.route('/samplequery', methods=['GET', 'POST'])
 def sampleQuery():
     cur = mysql.connection.cursor()
-    conn = mysql.connection
     admins = None
     query = ""
     if request.method == 'POST':
@@ -184,11 +183,9 @@ def sampleQuery():
 @app.route('/highscores', methods=['GET'])
 def highscores():
     cur = mysql.connection.cursor()
-    conn = mysql.connection
-    admins = None
     query = """ SELECT u.username, score, s.game_id
-                FROM Scores s 
-                JOIN Users u ON s.user_id = u.user_id 
+                FROM Scores s
+                JOIN Users u ON s.user_id = u.user_id
                 ORDER BY s.score ASC;"""
     cur.execute(query)
     scores = cur.fetchall()

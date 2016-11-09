@@ -8,7 +8,7 @@
 <body>
     <div class="mid-box" id="admin">
         <h2 class="smaller-header">Select a user to edit or delete</h2>
-        <form action="/Admin/Select" method="post">
+        <form action="/admin/select" method="post">
             <select name="user" class="select-style">
                 {% for user in users %}
                     <option value="{{ user[0] }}">{{ user[1] }}</option>
