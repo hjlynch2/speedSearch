@@ -6,7 +6,8 @@
     <link rel="stylesheet" type="text/css" href="/static/style.css">
 </head>
 <body>
-    <h3>High Scores</h3>
+    <div class="mid-box">
+    <h1 class="main-header">High Scores</h1>
         <table>
         <tr>
             <td></td>
@@ -33,6 +34,8 @@
             {% set cnt = cnt+1 %}
         {% endfor %}
         </table>
-        <!-- <img src="/static/gold.png"> -->
+        </br>
+        <a href="/"><button type="button" class="btn btn-primary">Go Home</button></a>
+    </div>
 </body>
 </html>

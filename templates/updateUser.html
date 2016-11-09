@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Update User</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css?v=4">
 </head>
 <body>
-    <h3>{{ user_info[1] }}'s admin status</h3>
-    <form action="/admin/edit" method="POST">
-        <input type="hidden" value="{{ user_info[0] }}" name="user_id">
-        <input type="radio" name="adminRights" value="no" {% if not user_info[2]: %} checked {% endif %} >
-            Not an Admin <br/>
-        <input type="radio" name="adminRights" value="yes" {% if user_info[2]: %} checked {% endif %} >
-            Admin <br/><br/>
-        <input type="submit" value="Submit Changes">
-    </form>
+    <div class="mid-box" id="update-user">
+        <h3 id="update-header">{{ user_info[1] }}'s admin status</h3>
+        <form action="/admin/edit" method="POST">
+            <input type="hidden" value="{{ user_info[0] }}" name="user_id">
+            <input type="radio" name="adminRights" value="no" {% if not user_info[2] %} checked {% endif %} >
+                <label class="radio-option"> Not an Admin </label><br/>
+            <input type="radio" name="adminRights" value="yes" {% if user_info[2] %} checked {% endif %} >
+                <label class="radio-option">Admin</label> <br/><br/>
+            <input type="submit" value="Submit Changes">
+        </form>
+    </div>
+    </br>
+    <a href="/"><button type="button" class="btn btn-primary">Go Home</button></a>
 </body>
 </html>
