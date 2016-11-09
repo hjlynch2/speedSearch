@@ -67,7 +67,7 @@ def signUp():
             cur.execute(query)
             conn.commit()
             cur.close()
-            return redirect(url_for('game', username=username))
+            return redirect(url_for('game'))
     cur.close()
     return render_template('createAccount.html', alreadyExists=alreadyExists, invalidPassword=invalidPassword)
 
