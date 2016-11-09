@@ -31,7 +31,8 @@ def login():
         cur.close()
         if validLogin:  # valid credentials
             session['logged_in'] = True
-            return redirect(url_for('game', username=username))
+            session['username'] = username
+            return redirect(url_for('game'))
         else:
             invalid = True
     return render_template('login.html', invalid=invalid)
@@ -70,7 +71,7 @@ def signUp():
 
 @app.route('/game', methods=['GET', 'POST'])
 def game():
-    username = request.args['username']
+    username = session['username']
     query = """SELECT admin FROM Users WHERE username='{}'""".format(username)
     cur = mysql.connection.cursor()
     cur.execute(query)
