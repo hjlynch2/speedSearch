@@ -7,11 +7,15 @@
 </head>
 <body>
     <div class="mid-box" id="game">
-        {% if admin %}
-        <a class="main-link" href="{% print url_for('admin') %}">Admin links</a></br>
+        {% if logged_in %}
+            {% if admin %}
+                <a class="main-link" href="{% print url_for('admin') %}">Admin links</a></br>
+            {% endif %}
+            <a class="main-link" href="/highscores">High Scores</a>
+            <a class="main-link" href="/logout">Log Out</a>
+        {% else %}
+            <a class="main-link" href="/">Go Home</a>
         {% endif %}
-        <a class="main-link" href="/highscores">High Scores</a>
-        <a class="main-link" href="/logout">Log Out</a>
     </div>
 </body>
 </html>

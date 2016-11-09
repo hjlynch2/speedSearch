@@ -14,7 +14,10 @@ app.secret_key = '\x9f\x10{\x9aK>\xd39oUBZhB\x11))/\x05J\xf5?\x1f\x80'
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if not session.get('logged_in'):
+        return render_template('index.html')
+    else:
+        return redirect(url_for('game'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -64,21 +67,23 @@ def signUp():
             cur.execute(query)
             conn.commit()
             cur.close()
-            return redirect(url_for('game', username=username))
+            return redirect(url_for('game'))
     cur.close()
     return render_template('createAccount.html', alreadyExists=alreadyExists, invalidPassword=invalidPassword)
 
 
 @app.route('/game', methods=['GET', 'POST'])
 def game():
-    username = session['username']
+    username = session.get('username')
     query = """SELECT admin FROM Users WHERE username='{}'""".format(username)
     cur = mysql.connection.cursor()
     cur.execute(query)
     results = cur.fetchone()
-    admin = results[0]
+    admin = None
+    if results:
+        admin = results[0]
     cur.close()
-    return render_template('game.html', username=username, admin=admin)
+    return render_template('game.html', username=username, admin=admin, logged_in=session.get('logged_in'))
 
 
 @app.route('/users')
@@ -104,7 +109,20 @@ def get_user_info(user_id):
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     users = get_users()
-    return render_template('admin.html', users=users)
+    cur = mysql.connection.cursor()
+    username = session.get('username')
+    admin = 0
+    if username:
+        query = """SELECT admin FROM Users WHERE username='{}'""".format(username)
+        cur.execute(query)
+        result = cur.fetchone()
+        if result:
+            admin = result[0]
+        cur.close()
+    if admin:
+        return render_template('admin.html', users=users)
+    else:
+        return redirect(url_for('index'))
 
 
 @app.route('/admin/select', methods=['GET', 'POST'])
