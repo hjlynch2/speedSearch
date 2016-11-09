@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
+import random
 
 app = Flask(__name__)
 
@@ -193,6 +194,41 @@ def highscores():
     cur.close()
     return render_template('highscores.html', scores=scores)
 
+@app.route('/creategame', methods=['GET'])
+def createGame():
+    
+    start, end = getGames()
+    while start == end:
+        start, end = getGames()
+
+    return render_template('createGame.html', start_game=start, end_game=end)
+
+def getGames():
+    cur = mysql.connection.cursor()
+    
+    min_ind_query = """ SELECT MIN(p.pl_from) from pagelinks p"""
+    max_ind_query = """ SELECT MAX(p.pl_from) from pagelinks p"""
+    
+    cur.execute(min_ind_query)
+    min_ind = cur.fetchone()[0] 
+    cur.execute(max_ind_query)
+    max_ind = cur.fetchone()[0] + 1
+
+    start_ind = random.randrange(min_ind, max_ind)
+    end_ind = start_ind
+
+    while end_ind == start_ind:
+        end_ind = random.randrange(min_ind, max_ind)
+
+    game_query = """ SELECT p.pl_title, p.pl_from FROM pagelinks p WHERE p.pl_from >= %d LIMIT 1 """
+
+    cur.execute(game_query % (start_ind))
+    start = cur.fetchone()[0]
+    cur.execute(game_query % (end_ind))
+    end = cur.fetchone()[0]
+    cur.close()
+
+    return start.decode('utf-8'), end.decode('utf-8')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
