@@ -7,7 +7,7 @@ td, tr {
 }
 
 table, th, td {
-    border: 1px solid black;
+    border: 1px solid white;
 }
 
 body {
@@ -86,6 +86,21 @@ input[type=radio] {
     padding: 20px;
 }
 
+.game-box  {
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-70%);
+    background-color: #4682B4;
+    -webkit-box-shadow: 10px 11px 30px -16px rgba(0,0,0,0.68);
+    -moz-box-shadow: 10px 11px 30px -16px rgba(0,0,0,0.68);
+    box-shadow: 10px 11px 30px -16px rgba(0,0,0,0.68);
+    text-align: center;
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+}
+
 .invalid {
     color: #F08080
 }
@@ -118,11 +133,6 @@ input[type=radio] {
 }
 
 #admin {
-    width: 450px;
-    padding: 20px;
-}
-
-#playgame {
     width: 450px;
     padding: 20px;
 }
