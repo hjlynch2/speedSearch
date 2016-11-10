@@ -214,21 +214,26 @@ def highscores():
 
 @app.route('/creategame', methods=['GET'])
 def createGame():
-    
+
     start, end = getGames()
     while start == end:
         start, end = getGames()
 
     return render_template('createGame.html', start_game=start, end_game=end)
 
+@app.route('/play', methods=['GET'])
+def play():
+
+    return render_template('play.html')
+
 def getGames():
     cur = mysql.connection.cursor()
-    
+
     min_ind_query = """ SELECT MIN(p.pl_from) from pagelinks p"""
     max_ind_query = """ SELECT MAX(p.pl_from) from pagelinks p"""
-    
+
     cur.execute(min_ind_query)
-    min_ind = cur.fetchone()[0] 
+    min_ind = cur.fetchone()[0]
     cur.execute(max_ind_query)
     max_ind = cur.fetchone()[0] + 1
 

@@ -71,9 +71,9 @@ input[type=radio] {
     padding: 20px;
 }
 
-.note-box {
+.bottom-box {
     position: absolute;
-    top: 50%;
+    top: 80%;
     left: 50%;
     transform: translateX(-50%) translateY(-30%);
     background-color: #4682B4;
