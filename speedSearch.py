@@ -214,17 +214,62 @@ def highscores():
 
 @app.route('/creategame', methods=['GET'])
 def createGame():
-
+    # return in the raw unicode
     start, end = getGames()
     while start == end:
         start, end = getGames()
 
-    return render_template('createGame.html', start_game=start, end_game=end)
+    # get start and end title
+    cur = mysql.connection.cursor()
+    start_query = """Select page_title from page where page_id = """ + str(start)
+    end_query = """Select page_title from page where page_id = """ + str(end)
+    cur.execute(start_query)
+    start_title=cur.fetchone()[0]
+    cur.execute(end_query)
+    end_title=cur.fetchone()[0]
+    cur.close()
 
-@app.route('/play', methods=['GET'])
+    session['start_id'] = start
+    session['end_id'] = end
+    session['start_title'] = start_title
+    session['end_title'] = end_title
+
+    return render_template('createGame.html', start_game=start_title, end_game=end_title, s=start)
+
+@app.route('/play', methods=['GET','POST'])
 def play():
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
 
-    return render_template('play.html')
+        if request.form['starting'] == '1':
+            next_page = session['start_id']
+            next_page_title = session['start_title']
+        else:
+            next_page_title = request.form['next_page_title']
+            # get next page id
+            page_query = """Select page_id from page where page_title = '""" + next_page_title + """'"""
+            cur.execute(page_query)
+            next_page = cur.fetchone()[0]
+
+
+        # game is over, create a new game - replace this later
+        if next_page == session['end_id']:
+            return createGame()
+
+        curr_page = request.form['curr_page']
+        curr_page_title = request.form['curr_page_title']
+        prev_page = request.form['prev_page']
+        prev_page_title = request.form['prev_page_title']
+
+        # get links for next page
+        links_query = """Select pl_title from pagelinks where pl_from = """ + str(next_page)
+        cur.execute(links_query)
+        links = cur.fetchall()
+        cur.close()
+
+        return render_template('play.html', curr_page=next_page, curr_page_title=next_page_title, prev_page=curr_page, prev_page_title=curr_page_title, links = links)
+    else:
+        return game()
 
 def getGames():
     cur = mysql.connection.cursor()
@@ -243,7 +288,7 @@ def getGames():
     while end_ind == start_ind:
         end_ind = random.randrange(min_ind, max_ind)
 
-    game_query = """ SELECT p.pl_title, p.pl_from FROM pagelinks p WHERE p.pl_from >= %d LIMIT 1 """
+    game_query = """ SELECT p.pl_from FROM pagelinks p WHERE p.pl_from >= %d LIMIT 1 """
 
     cur.execute(game_query % (start_ind))
     start = cur.fetchone()[0]
@@ -251,7 +296,7 @@ def getGames():
     end = cur.fetchone()[0]
     cur.close()
 
-    return start.decode('utf-8'), end.decode('utf-8')
+    return start, end
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

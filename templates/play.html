@@ -6,11 +6,20 @@
     <link rel="stylesheet" type="text/css" href="/static/style.css">
 </head>
 <body>
-    <div class="game-box">
-        <iframe src="https://en.wikipedia.org/wiki/Database" width="600" height="400"></iframe>
-        <p><b>Node: Advanced functionality involving analysis of game data, path taken, optimal shortest path, etc... comes here after game play</b></p>
-        </br>
-        <a href="/"><button type="button" class="btn btn-primary">Back</button></a>
+    <div class="mid-box" id="play">
+        <h2>Current Page: {{ curr_page_title.decode('utf-8').replace("_", " ") }}</h2>
+        <h4>Previous Page: {{ prev_page_title.decode('utf-8').replace("_", " ") }}</h4>
+        {% for link in links %}
+            <form action="/play" method="POST" style="display:inline">
+                <input type="hidden" name="starting" value="0">
+                <input type="hidden" name="curr_page" value="{{ curr_page }}">
+                <input type="hidden" name="curr_page_title" value="{{ curr_page_title }}">
+                <input type="hidden" name="prev_page" value="{{ prev_page }}">
+                <input type="hidden" name="prev_page_title" value="{{ prev_page_title }}">
+                <input type="hidden" name="next_page_title" value="{{ link[0] }}">
+                <input type="submit" id="page-link" value="{{ link[0].decode('utf-8').replace("_", " ") }}">
+            </form>
+        {% endfor %}
     </div>
 </body>
 </html>

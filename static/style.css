@@ -132,6 +132,10 @@ input[type=radio] {
     padding: 20px;
 }
 
+#play {
+    width: 85%;
+}
+
 #admin {
     width: 450px;
     padding: 20px;
@@ -153,6 +157,9 @@ input[type=radio] {
 
 #delete-header {
     font-size: 25px;
+}
+#page-link {
+    padding: 5px;
 }
 
 .main-header {

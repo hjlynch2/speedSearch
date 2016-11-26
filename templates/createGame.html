@@ -8,11 +8,18 @@
 <body>
     <div class="mid-box" id="playgame">
         <h2 class="smaller-header">Start Page: </h2>
-        {{ start_game }}
+        {{ start_game.decode('utf-8').replace("_", " ") }}
         <h2 class="smaller-header">End Page: </h2>
-        {{ end_game }}
+        {{ end_game.decode('utf-8').replace("_", " ") }}
         <h2 class="smaller-header">Ready for the challenge? </h2>
-        <a class="main-link" href="/play">Play Game</a>
+        <form action="/play" method="POST">
+            <input type="hidden" name="starting" value="1">
+            <input type="hidden" name="curr_page" value="{{ session['start_id'] }}">
+            <input type="hidden" name="curr_page_title" value="{{ session['start_title'] }}">
+            <input type="hidden" name="prev_page" value="">
+            <input type="hidden" name="prev_page_title" value="">
+            <input type="submit" value="Play Game">
+        </form>
     </div>
     <div class="bottom-box">
     		<b>Note: Advanced functionality (Advanced game generation) happens in the background here</b>
