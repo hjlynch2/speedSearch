@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 import random
 import traceback
-from unidecode import unidecode
 
 
 app = Flask(__name__)
@@ -291,10 +290,8 @@ def play():
         links = cur.fetchall()
         cur.close()
 
-        print curr_page_title
-        print prev_page_title
+        return render_template('play.html', curr_page=next_page, curr_page_title=next_page_title.encode('utf-8'), prev_page=curr_page, prev_page_title=curr_page_title.encode('utf-8'), links = links)
 
-        return render_template('play.html', curr_page=next_page, curr_page_title=next_page_title, prev_page=curr_page, prev_page_title=curr_page_title, links = links)
     else:
         return game()
 
