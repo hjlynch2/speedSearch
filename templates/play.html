@@ -17,7 +17,7 @@
                 <input type="hidden" name="prev_page" value="{{ prev_page }}">
                 <input type="hidden" name="prev_page_title" value="{{ prev_page_title.decode('utf-8') }}">
                 <input type="hidden" name="next_page_title" value="{{ link[0].decode('utf-8') }}">
-                <input type="submit" id="page-link" value="{{ link[0].decode('utf-8') }}">
+                <input type="submit" id="page-link" value="{{ link[0].decode('utf-8').replace("_"," ") }}">
             </form>
         {% endfor %}
     </div>
