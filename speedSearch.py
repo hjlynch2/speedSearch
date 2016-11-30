@@ -319,5 +319,9 @@ def getGames():
 
     return start, end
 
+@app.route('/deadEnd')
+def deadEnd():
+    return render_template('deadend.html')
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
