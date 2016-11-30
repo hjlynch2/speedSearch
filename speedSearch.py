@@ -290,6 +290,9 @@ def play():
         links = cur.fetchall()
         cur.close()
 
+        if len(links) == 0:
+            return deadEndGen(next_page_title)
+
         return render_template('play.html', curr_page=next_page, curr_page_title=next_page_title.encode('utf-8'), prev_page=curr_page, prev_page_title=curr_page_title.encode('utf-8'), links = links)
 
     else:
@@ -322,9 +325,14 @@ def getGames():
 
     return start, end
 
+def deadEndGen(some_page):
+    if some_page is None:
+        return render_template('deadend.html',active_page=" ")
+    return render_template('deadend.html',active_page=' ( ' + some_page + ' ) ')
+
 @app.route('/deadEnd')
 def deadEnd():
-    return render_template('deadend.html')
+    return deadEndGen(active_page=None)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
