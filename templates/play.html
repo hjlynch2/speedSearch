@@ -7,8 +7,8 @@
 </head>
 <body>
     <div class="mid-box" id="play">
-        <h2>Current Page: {{ curr_page_title.decode('utf-8') }}</h2>
-        <h4>Previous Page: {{ prev_page_title.decode('utf-8') }}</h4>
+        <h2>Current Page: {{ curr_page_title.decode('utf-8').replace("_"," ") }}</h2>
+        <h4>Previous Page: {{ prev_page_title.decode('utf-8').replace("_"," ") }}</h4>
         {% for link in links %}
             <form action="/play" method="POST" style="display:inline">
                 <input type="hidden" name="starting" value="0">

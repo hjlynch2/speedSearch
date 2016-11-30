@@ -234,27 +234,29 @@ def createGame():
 
     session['start_id'] = start
     session['end_id'] = end
-    session['start_title'] = start_title
-    session['end_title'] = end_title
+    session['start_title'] = start_title.decode("utf-8")
+    session['end_title'] = end_title.decode("utf-8")
 
     return render_template('createGame.html', start_game=start_title, end_game=end_title, s=start)
 
 def fetch_page(page_title):
+    next_page = 0
     valid = True
     try:
         cur = mysql.connection.cursor()
-        page_query = """Select page_id from page where page_title = '""" + page_title + """'"""
+        page_query = """ Select page_id from page where page_title = \"%s\" """ % (page_title)
         cur.execute(page_query)
-        next_page = cur.fetchone()[0]
-        if next_page is None:
-            raise Exception("page doesn't exist - none type item returned from query error")
+        result = cur.fetchone()
+        if result is None:
+            return (0, True, True) # deadend, page not in table
+        next_page = result[0]
     except Exception:
-        next_page = "page doesn't exist"
+        next_page = -1
         valid = False
         traceback.print_exc()
     finally:
         cur.close()
-        return (next_page, valid)
+        return (next_page, valid, False)
 
 @app.route('/play', methods=['GET','POST'])
 def play():
@@ -268,10 +270,11 @@ def play():
             next_page_title = request.form['next_page_title']
             # get next page id
 
-            next_page, valid = fetch_page(next_page_title)
+            next_page, valid, deadend = fetch_page(next_page_title)
             if not valid:
                 return "page not valid - db error todo"
-
+            if deadend:
+                return deadEnd()
 
         # game is over, create a new game - replace this later
         if next_page == session['end_id']:
@@ -287,6 +290,9 @@ def play():
         cur.execute(links_query)
         links = cur.fetchall()
         cur.close()
+
+        print curr_page_title
+        print prev_page_title
 
         return render_template('play.html', curr_page=next_page, curr_page_title=next_page_title, prev_page=curr_page, prev_page_title=curr_page_title, links = links)
     else:
