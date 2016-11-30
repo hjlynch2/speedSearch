@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 import random
+import traceback
+
 
 app = Flask(__name__)
 
@@ -236,6 +238,23 @@ def createGame():
 
     return render_template('createGame.html', start_game=start_title, end_game=end_title, s=start)
 
+def fetch_page(page_title):
+    valid = True
+    try:
+        cur = mysql.connection.cursor()
+        page_query = """Select page_id from page where page_title = '""" + page_title + """'"""
+        cur.execute(page_query)
+        next_page = cur.fetchone()[0]
+        if next_page is None:
+            raise Exception("page doesn't exist - none type item returned from query error")
+    except Exception:
+        next_page = "page doesn't exist"
+        valid = False
+        traceback.print_exc()
+    finally:
+        cur.close()
+        return (next_page, valid)
+
 @app.route('/play', methods=['GET','POST'])
 def play():
     if request.method == 'POST':
@@ -247,9 +266,10 @@ def play():
         else:
             next_page_title = request.form['next_page_title']
             # get next page id
-            page_query = """Select page_id from page where page_title = '""" + next_page_title + """'"""
-            cur.execute(page_query)
-            next_page = cur.fetchone()[0]
+
+            next_page, valid = fetch_page(next_page_title)
+            if not valid:
+                return "page not valid - db error todo"
 
 
         # game is over, create a new game - replace this later

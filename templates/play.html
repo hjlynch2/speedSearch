@@ -7,8 +7,8 @@
 </head>
 <body>
     <div class="mid-box" id="play">
-        <h2>Current Page: {{ curr_page_title.decode('utf-8').replace("_", " ") }}</h2>
-        <h4>Previous Page: {{ prev_page_title.decode('utf-8').replace("_", " ") }}</h4>
+        <h2>Current Page: {{ curr_page_title.decode('utf-8') }}</h2>
+        <h4>Previous Page: {{ prev_page_title.decode('utf-8') }}</h4>
         {% for link in links %}
             <form action="/play" method="POST" style="display:inline">
                 <input type="hidden" name="starting" value="0">
@@ -16,8 +16,8 @@
                 <input type="hidden" name="curr_page_title" value="{{ curr_page_title }}">
                 <input type="hidden" name="prev_page" value="{{ prev_page }}">
                 <input type="hidden" name="prev_page_title" value="{{ prev_page_title }}">
-                <input type="hidden" name="next_page_title" value="{{ link[0] }}">
-                <input type="submit" id="page-link" value="{{ link[0].decode('utf-8').replace("_", " ") }}">
+                <input type="hidden" name="next_page_title" value="{{ link[0].decode('utf-8') }}">
+                <input type="submit" id="page-link" value="{{ link[0].decode('utf-8') }}">
             </form>
         {% endfor %}
     </div>
