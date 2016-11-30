@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 import random
 import traceback
-from unidecode import unidecode
 
 
 app = Flask(__name__)
@@ -243,7 +242,7 @@ def fetch_page(page_title):
     valid = True
     try:
         cur = mysql.connection.cursor()
-        page_query = """Select page_id from page where page_title = '""" + page_title + """'"""
+        page_query = """ Select page_id from page where page_title = \"%s\" """ % (page_title)
         cur.execute(page_query)
         next_page = cur.fetchone()[0]
         if next_page is None:
@@ -288,7 +287,7 @@ def play():
         links = cur.fetchall()
         cur.close()
 
-        return render_template('play.html', curr_page=next_page, curr_page_title=next_page_title, prev_page=curr_page, prev_page_title=curr_page_title, links = links)
+        return render_template('play.html', curr_page=next_page, curr_page_title=next_page_title.encode('utf-8'), prev_page=curr_page, prev_page_title=curr_page_title.encode('utf-8'), links = links)
     else:
         return game()
 

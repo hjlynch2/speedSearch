@@ -15,7 +15,7 @@
         <form action="/play" method="POST">
             <input type="hidden" name="starting" value="1">
             <input type="hidden" name="curr_page" value="{{ session['start_id'] }}">
-            <input type="hidden" name="curr_page_title" value="{{ session['start_title'] }}">
+            <input type="hidden" name="curr_page_title" value="{{ session['start_title'].decode('utf-8') }}">
             <input type="hidden" name="prev_page" value="">
             <input type="hidden" name="prev_page_title" value="">
             <input type="submit" value="Play Game">
