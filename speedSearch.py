@@ -214,6 +214,7 @@ def highscores():
     cur.close()
     return render_template('highscores.html', scores=scores)
 
+
 @app.route('/creategame', methods=['GET'])
 def createGame():
     # return in the raw unicode
@@ -226,9 +227,9 @@ def createGame():
     start_query = """Select page_title from page where page_id = """ + str(start)
     end_query = """Select page_title from page where page_id = """ + str(end)
     cur.execute(start_query)
-    start_title=cur.fetchone()[0]
+    start_title = cur.fetchone()[0]
     cur.execute(end_query)
-    end_title=cur.fetchone()[0]
+    end_title = cur.fetchone()[0]
     cur.close()
 
     session['start_id'] = start
@@ -237,6 +238,7 @@ def createGame():
     session['end_title'] = end_title.decode("utf-8")
 
     return render_template('createGame.html', start_game=start_title, end_game=end_title, s=start)
+
 
 def fetch_page(page_title):
     next_page = 0
@@ -247,7 +249,7 @@ def fetch_page(page_title):
         cur.execute(page_query)
         result = cur.fetchone()
         if result is None:
-            return (0, True, True) # deadend, page not in table
+            return (0, True, True)  # deadend, page not in table
         next_page = result[0]
     except Exception:
         next_page = -1
@@ -257,7 +259,8 @@ def fetch_page(page_title):
         cur.close()
         return (next_page, valid, False)
 
-@app.route('/play', methods=['GET','POST'])
+
+@app.route('/play', methods=['GET', 'POST'])
 def play():
     if request.method == 'POST':
         cur = mysql.connection.cursor()
@@ -281,6 +284,7 @@ def play():
 
         curr_page = request.form['curr_page']
         curr_page_title = request.form['curr_page_title']
+
         prev_page = request.form['prev_page']
         prev_page_title = request.form['prev_page_title']
 
@@ -293,10 +297,11 @@ def play():
         if len(links) == 0:
             return deadEndGen(next_page_title)
 
-        return render_template('play.html', curr_page=next_page, curr_page_title=next_page_title.encode('utf-8'), prev_page=curr_page, prev_page_title=curr_page_title.encode('utf-8'), links = links)
+        return render_template('play.html', curr_page=next_page, curr_page_title=next_page_title.encode('utf-8'), prev_page=curr_page, prev_page_title=curr_page_title.encode('utf-8'), links=links)
 
     else:
         return game()
+
 
 def getGames():
     cur = mysql.connection.cursor()
@@ -325,14 +330,17 @@ def getGames():
 
     return start, end
 
+
 def deadEndGen(some_page):
     if some_page is None:
-        return render_template('deadend.html',active_page=" ")
-    return render_template('deadend.html',active_page=' ( ' + some_page + ' ) ')
+        return render_template('deadend.html', active_page=" ")
+    return render_template('deadend.html', active_page=' ( ' + some_page + ' ) ')
+
 
 @app.route('/deadEnd')
 def deadEnd():
     return deadEndGen(active_page=None)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
