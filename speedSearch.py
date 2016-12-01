@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 import random
 import traceback
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 
 app = Flask(__name__)
@@ -236,10 +239,10 @@ def createGame():
 
     session['start_id'] = start
     session['end_id'] = end
-    session['start_title'] = start_title.decode("utf-8")
-    session['end_title'] = end_title.decode("utf-8")
+    session['start_title'] = start_title
+    session['end_title'] = end_title
 
-    return render_template('createGame.html', start_game=start_title, end_game=end_title, s=start)
+    return render_template('createGame.html', start_game=start_title.encode('utf-8'), end_game=end_title.encode('utf-8'), s=start)
 
 
 def fetch_page(page_title):
