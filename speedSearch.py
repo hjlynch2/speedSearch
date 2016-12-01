@@ -218,12 +218,14 @@ def highscores():
 @app.route('/creategame', methods=['GET'])
 def createGame():
     # return in the raw unicode
-    start, end = getGames()
+    cur = mysql.connection.cursor()
+    start = getStartPage()
+    end = getGames()
     while start == end:
-        start, end = getGames()
+        start = getStartPage()
+        end = getGames()
 
     # get start and end title
-    cur = mysql.connection.cursor()
     start_query = """Select page_title from page where page_id = """ + str(start)
     end_query = """Select page_title from page where page_id = """ + str(end)
     cur.execute(start_query)
@@ -322,13 +324,28 @@ def getGames():
 
     game_query = """ SELECT p.pl_from FROM pagelinks p WHERE p.pl_from >= %d LIMIT 1 """
 
-    cur.execute(game_query % (start_ind))
-    start = cur.fetchone()[0]
     cur.execute(game_query % (end_ind))
     end = cur.fetchone()[0]
     cur.close()
 
-    return start, end
+    return end
+
+
+def getStartPage():
+    cur = mysql.connection.cursor()
+
+    min_ind_query = """ SELECT MIN(pl_from) from eligible_start"""
+    max_ind_query = """ SELECT MAX(pl_from) from eligible_start"""
+    cur.execute(min_ind_query)
+    min_ind = cur.fetchone()[0]
+    cur.execute(max_ind_query)
+    max_ind = cur.fetchone()[0] + 1
+    start_ind = random.randrange(min_ind, max_ind)
+    start_query = """ SELECT pl_from FROM eligible_start WHERE pl_from >= {} LIMIT 1 """.format(start_ind)
+    cur.execute(start_query)
+    start = cur.fetchone()[0]
+    cur.close()
+    return start
 
 
 def deadEndGen(some_page):
