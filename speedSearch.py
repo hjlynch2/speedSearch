@@ -3,6 +3,7 @@ from flask_mysqldb import MySQL
 import random
 import traceback
 import sys
+import random
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
@@ -221,21 +222,12 @@ def highscores():
 @app.route('/creategame', methods=['GET'])
 def createGame():
     # return in the raw unicode
-    cur = mysql.connection.cursor()
-    start = getStartPage()
-    end = getGames()
-    while start == end:
-        start = getStartPage()
-        end = getGames()
 
-    # get start and end title
-    start_query = """Select page_title from page where page_id = """ + str(start)
-    end_query = """Select page_title from page where page_id = """ + str(end)
-    cur.execute(start_query)
-    start_title = cur.fetchone()[0]
-    cur.execute(end_query)
-    end_title = cur.fetchone()[0]
-    cur.close()
+    start = getStartPage()
+    end = getEndPage(start, dist = 5)
+
+    start_title = getPageTitle(start)
+    end_title = getPageTitle(end)
 
     session['start_id'] = start
     session['end_id'] = end
@@ -294,9 +286,7 @@ def play():
         prev_page_title = request.form['prev_page_title']
 
         # get links for next page
-        links_query = """Select pl_title from pagelinks where pl_from = """ + str(next_page)
-        cur.execute(links_query)
-        links = cur.fetchall()
+        links = getNeighbors(next_page)
         cur.close()
 
         if len(links) == 0:
@@ -333,6 +323,7 @@ def getGames():
 
     return end
 
+# game generation
 
 def getStartPage():
     cur = mysql.connection.cursor()
@@ -350,12 +341,77 @@ def getStartPage():
     cur.close()
     return start
 
+def getEndPage(start_page, dist = 10):
+    
+    visited = set()
+
+    start_page_title = getPageTitle(start_page)
+    stack = [(start_page_title,0)]
+
+    next = None
+
+    while len(stack) > 0:
+        cur_title, distance = stack.pop()
+
+        print cur_title
+
+        # convert title to id
+        cur_id = getPageID(cur_title)
+        if cur_id is None:
+            continue
+
+        if distance == dist:
+            return cur_id
+
+        neighbors = getNeighbors(cur_id)
+        if neighbors is None:
+            continue
+
+        unvisited_neighbors = [x for x in neighbors if not x in visited]
+        if len(unvisited_neighbors) > 0:
+            next_page = random.choice(unvisited_neighbors)
+            next_distance = distance + 1
+            unvisited_neighbors.remove(next_page)
+            for neighbor in unvisited_neighbors:
+                stack.append((neighbor,next_distance))
+                visited.add(neighbor)
+            stack.append((next_page,next_distance))
+            visited.add(next_page)
+
+    return getEndPage(start_page, dist - 1)
+
+def getPageTitle(page_id):
+    cur = mysql.connection.cursor()
+    query = """Select page_title from page where page_id = \"%s\"""" % (str(page_id))
+    cur.execute(query)
+    page_title = cur.fetchone()[0]
+    cur.close()
+    return page_title
+
+
+def getPageID(page_title):
+    cur = mysql.connection.cursor()
+    query = """ SELECT page_id FROM page WHERE page_title = \"%s\" AND page_namespace = 0""" % (page_title)
+    cur.execute(query)
+    result = cur.fetchone()
+    if result is None:
+        return None
+    page_id = result[0]
+    cur.close()
+    return page_id
+
+def getNeighbors(start_page):
+    cur = mysql.connection.cursor()
+    query = """ SELECT pl_title FROM pagelinks WHERE pl_from = %s""" % (start_page)
+    cur.execute(query)
+    neighbors = [x[0] for x in cur.fetchall()]
+    cur.close()
+    return neighbors
 
 def deadEndGen(some_page):
     if some_page is None:
         return render_template('deadend.html', active_page=" ")
     return render_template('deadend.html', active_page=' ( ' + some_page + ' ) ')
-
 
 @app.route('/deadEnd')
 def deadEnd():
