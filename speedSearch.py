@@ -358,10 +358,10 @@ def getEndPage(start_page, dist = 10):
 
     next = None
 
+    path = {}
+
     while len(stack) > 0:
         cur_title, distance = stack.pop()
-
-        print cur_title
 
         # convert title to id
         cur_id = getPageID(cur_title)
@@ -369,6 +369,7 @@ def getEndPage(start_page, dist = 10):
             continue
 
         if distance == dist:
+            tracePath(path, start_page_title, cur_title)
             return cur_id
 
         neighbors = getNeighbors(cur_id)
@@ -383,10 +384,18 @@ def getEndPage(start_page, dist = 10):
             for neighbor in unvisited_neighbors:
                 stack.append((neighbor,next_distance))
                 visited.add(neighbor)
+                path[neighbor] = cur_title
             stack.append((next_page,next_distance))
             visited.add(next_page)
+            path[next_page] = cur_title
 
     return getEndPage(start_page, dist - 1)
+
+def tracePath(path, start, end):
+    runner = end
+    while runner != start:
+        print runner
+        runner = path[runner]
 
 def getPageTitle(page_id):
     cur = mysql.connection.cursor()
