@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/static/style.css">
 </head>
 <body>
-    <div class="mid-box" id="playgame">
+    <div class="mid-box">
         <h2 class="smaller-header">Start Page: </h2>
         {{ start_game.decode('utf-8').replace("_", " ") }}
         <h2 class="smaller-header">End Page: </h2>
@@ -20,9 +20,6 @@
             <input type="hidden" name="prev_page_title" value="">
             <input type="submit" value="Play Game">
         </form>
-    </div>
-    <div class="bottom-box">
-    		<b>Note: Advanced functionality (Advanced game generation) happens in the background here</b>
     </div>
 </body>
 </html>

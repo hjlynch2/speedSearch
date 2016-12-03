@@ -18,6 +18,7 @@ app.config['MYSQL_DB'] = 'SpeedSearch'
 app.config['MYSQL_HOST'] = 'fa16-cs411-10.cs.illinois.edu'
 app.secret_key = '\x9f\x10{\x9aK>\xd39oUBZhB\x11))/\x05J\xf5?\x1f\x80'
 
+score = 0
 
 @app.route('/')
 def index():
@@ -222,7 +223,7 @@ def highscores():
 @app.route('/creategame', methods=['GET'])
 def createGame():
     # return in the raw unicode
-
+    session['score'] = 0
     start = getStartPage()
     end = getEndPage(start, dist = 5)
 
@@ -244,6 +245,8 @@ def fetch_page(page_title):
         cur = mysql.connection.cursor()
         page_query = """ Select page_id from page where page_title = \"%s\" """ % (page_title)
         cur.execute(page_query)
+        print "fetched page " + str(page_title)
+        print "fetched pages: " + str(cur.rowcount)
         result = cur.fetchone()
         if result is None:
             return (0, True, True)  # deadend, page not in table
@@ -267,17 +270,22 @@ def play():
             next_page_title = session['start_title']
         else:
             next_page_title = request.form['next_page_title']
+            session['score'] = session['score'] + 1
             # get next page id
-
             next_page, valid, deadend = fetch_page(next_page_title)
             if not valid:
                 return "page not valid - db error todo"
             if deadend:
                 return deadEnd()
 
+        print "next page: " + str(next_page)
+        print next_page_title
+        print "end_id: " + str(session['end_id'])
+        print session['end_title']
+
         # game is over, create a new game - replace this later
         if next_page == session['end_id']:
-            return createGame()
+            return endGame()
 
         curr_page = request.form['curr_page']
         curr_page_title = request.form['curr_page_title']
@@ -416,6 +424,10 @@ def deadEndGen(some_page):
 @app.route('/deadEnd')
 def deadEnd():
     return deadEndGen(active_page=None)
+
+@app.route('/endGame', methods=['GET', 'POST'])
+def endGame():
+    return render_template('endGame.html')
 
 
 if __name__ == '__main__':

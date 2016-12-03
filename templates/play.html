@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Play SpeedSearch</title>
-    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/style.css?v=48">
 </head>
 <body>
     <div class="mid-box" id="play">
         <h2>Current Page: {{ curr_page_title.decode('utf-8').replace("_"," ") }}</h2>
         <h4>Previous Page: {{ prev_page_title.decode('utf-8').replace("_"," ") }}</h4>
+        <h4>End Goal: {{ session['end_title'].replace("_"," ") }}</h4>
         {% for link in links %}
             <form action="/play" method="POST" style="display:inline">
                 <input type="hidden" name="starting" value="0">

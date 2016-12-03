@@ -134,11 +134,25 @@ input[type=radio] {
 
 #play {
     width: 85%;
+    height: 85%;
+    top: 68%;
+    overflow-y: auto;
+    line-height: 20px;
 }
 
 #admin {
     width: 450px;
     padding: 20px;
+}
+
+#deadend {
+    width: 450px;
+    padding: 15px;
+}
+
+#end-game {
+    width: 450px;
+    padding: 15px;
 }
 
 #delete-user {
@@ -158,8 +172,10 @@ input[type=radio] {
 #delete-header {
     font-size: 25px;
 }
+
 #page-link {
     padding: 5px;
+    margin-bottom: 4px;
 }
 
 .main-header {
@@ -178,11 +194,14 @@ input[type=radio] {
 
 .main-link {
     color:white;
-    text-decoration:none;
 }
 
 a:hover {
     color: gainsboro;
+}
+
+a {
+    text-decoration: none;
 }
 
 ::-webkit-input-placeholder {

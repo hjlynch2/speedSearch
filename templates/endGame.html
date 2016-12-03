@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Congrats!</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css?v=7">
+</head>
+<body>
+    <div class="mid-box" id="end-game">
+        <h1>Congrats you won!</h1>
+        <h3>Score: {{ session['score'] }}</h3>
+        <a class="main-link" href="{% print url_for('createGame') %}">Play Again?</a>
+    </div>
+</body>
+</html>
