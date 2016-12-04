@@ -7,6 +7,10 @@ import random
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
+EASY = 0
+MEDIUM = 1
+HARD = 2
+
 
 app = Flask(__name__)
 
@@ -236,6 +240,38 @@ def createGame():
     session['end_title'] = end_title
 
     return render_template('createGame.html', start_game=start_title.encode('utf-8'), end_game=end_title.encode('utf-8'), s=start)
+
+# getting endpage with difficulty parameter
+def getEndPageHelper(start, difficulty):
+    if difficulty == EASY:
+        return getEndPage(start, dist = 3)
+    elif difficulty == MEDIUM:
+        return getEndPage(start, dist = 5)
+    elif difficulty == HARD:
+        return getEndPage(start, dist = 7)
+    else:
+        return getEndPage(start, dist = 3)
+
+
+def insertGameIfNew(start,end, difficulty):
+    cur = mysql.connection.cursor()
+    query = """ SELECT COUNT(*) FROM Games WHERE source = %s AND end = %s """ % (start, end)
+    cur.execute(query)
+    num = cur.fetchone()[0]
+    cur.close()
+    if int(num) == 0:
+        insertGame(start, end, difficulty)
+
+def insertGame(start, end, difficulty):
+    cur = mysql.connection.cursor()
+    dist = 3
+    if difficulty == EASY: dist = 3
+    elif difficulty == MEDIUM: dist = 5
+    elif difficulty == HARD: dist = 7
+    insert_query = """INSERT INTO Games(source,destination,difficulty,optimal_score,rating) VALUES (%s,%s,%s,%s,%s,%s)"""
+    insert_query = query % (start,end,difficulty,dist,5)
+    cur.execute(insert_query)
+    cur.close()
 
 
 def fetch_page(page_title):
