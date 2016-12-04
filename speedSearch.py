@@ -6,9 +6,9 @@ import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-EASY = 0
-MEDIUM = 1
-HARD = 2
+EASY = 1
+MEDIUM = 2
+HARD = 3
 
 
 app = Flask(__name__)
@@ -95,6 +95,7 @@ def game():
     if results:
         admin = results[0]
     cur.close()
+    session['difficulty'] = EASY
     return render_template('game.html', username=username, admin=admin, logged_in=session.get('logged_in'))
 
 
@@ -229,7 +230,10 @@ def createGame():
     # return in the raw unicode
     session['score'] = 0
     start = getStartPage()
-    end = getEndPage(start, dist=5)
+    end = getEndPageHelper(start, int(session['difficulty']))
+    
+    # -> for populating database with games
+    # insertGameIfNew(start,end,session['difficulty'])
 
     start_title = getPageTitle(start)
     end_title = getPageTitle(end)
@@ -252,10 +256,9 @@ def getEndPageHelper(start, difficulty):
     else:
         return getEndPage(start, dist = 3)
 
-
 def insertGameIfNew(start,end, difficulty):
     cur = mysql.connection.cursor()
-    query = """ SELECT COUNT(*) FROM Games WHERE source = %s AND end = %s """ % (start, end)
+    query = """ SELECT COUNT(*) FROM Games WHERE source = %s AND destination = %s """ % (start, end)
     cur.execute(query)
     num = cur.fetchone()[0]
     cur.close()
@@ -268,9 +271,10 @@ def insertGame(start, end, difficulty):
     if difficulty == EASY: dist = 3
     elif difficulty == MEDIUM: dist = 5
     elif difficulty == HARD: dist = 7
-    insert_query = """INSERT INTO Games(source,destination,difficulty,optimal_score,rating) VALUES (%s,%s,%s,%s,%s,%s)"""
-    insert_query = query % (start,end,difficulty,dist,5)
+    insert_query = """INSERT INTO Games(source,destination,difficulty,optimal_score,rating) VALUES (%s,%s,%s,%s,%s)"""
+    insert_query = insert_query % (start,end,difficulty,dist,5)
     cur.execute(insert_query)
+    mysql.connection.commit()
     cur.close()
 
 
@@ -396,8 +400,8 @@ def getStartPage():
     cur.close()
     return start
 
-
 def getEndPage(start_page, dist=10):
+    print "chosen difficulty = " + str(dist)
 
     visited = set()
 
@@ -482,6 +486,32 @@ def deadEndGen(some_page):
         return render_template('deadend.html', active_page=" ")
     return render_template('deadend.html', active_page=' ( ' + some_page + ' ) ')
 
+def insertScore(start, end):
+    user_id = getUserID(session['username'])
+    print "User ID : " + str(user_id)
+    game_id = getGameID(start, end)
+    cur = mysql.connection.cursor()
+    query = """ INSERT INTO Scores(game_id,user_id,score) VALUES (%s,%s,%s) """ % (game_id, user_id, int(session['score']))
+    print query
+    cur.execute(query)
+    mysql.connection.commit()
+    cur.close()
+
+def getUserID(username):
+    cur = mysql.connection.cursor()
+    query = """ SELECT user_id FROM Users WHERE username = "%s" """ % (username)
+    cur.execute(query)
+    user_id = cur.fetchone()[0]
+    cur.close()
+    return int(user_id)
+
+def getGameID(start, end):
+    cur = mysql.connection.cursor()
+    query = """ SELECT game_id FROM Games WHERE source = %s AND destination = %s""" % (start, end)
+    cur.execute(query)
+    game_id = cur.fetchone()[0]
+    cur.close()
+    return game_id
 
 @app.route('/deadEnd')
 def deadEnd():
@@ -490,6 +520,8 @@ def deadEnd():
 
 @app.route('/endGame', methods=['GET', 'POST'])
 def endGame():
+    insertGameIfNew(session['start_id'],session['end_id'],session['difficulty'])
+    insertScore(session['start_id'],session['end_id'])
     return render_template('endGame.html')
 
 
