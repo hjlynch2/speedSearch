@@ -3,12 +3,15 @@ from flask_mysqldb import MySQL
 import random
 import traceback
 import sys
+import heapq
+import time
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
 EASY = 1
 MEDIUM = 2
 HARD = 3
+ADVANCED_EASY = 4
 
 
 app = Flask(__name__)
@@ -245,7 +248,38 @@ def createGame():
 
     return render_template('createGame.html', start_game=start_title.encode('utf-8'), end_game=end_title.encode('utf-8'), s=start)
 
+class HeapBuffer:
+
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.heap = []
+
+    def push(self,val):
+        if len(self.heap) < self.capacity:
+            heapq.heappush(self.heap, val)
+        else:
+            # Equivalent to a push, then a pop, but faster
+            heapq.heappushpop(self.heap, val)
+
+    def show(self):
+        print sorted(self.heap)
+
+
 # getting endpage with difficulty parameter
+def getMostFrequentEndPage(start, dist):
+    # start_time = time.time()
+    page_frequency = {}
+    for i in xrange(100):
+        end = getEndPage(start, dist)
+        if end not in page_frequency:
+            page_frequency[end] = 0
+        page_frequency[end] += 1
+    top10 = HeapBuffer(10)
+    for key, value in page_frequency.iteritems():
+        top10.push((value,key))
+    # print "Time generating a game at dist %d = %.3f" % (dist,time.time() - start_time)
+    return random.choice(top10.heap)[1]
+
 def getEndPageHelper(start, difficulty):
     if difficulty == EASY:
         return getEndPage(start, dist = 3)
@@ -253,6 +287,8 @@ def getEndPageHelper(start, difficulty):
         return getEndPage(start, dist = 5)
     elif difficulty == HARD:
         return getEndPage(start, dist = 7)
+    elif difficulty == ADVANCED_EASY:
+        return getMostFrequentEndPage(start, dist = 3)
     else:
         return getEndPage(start, dist = 3)
 
@@ -401,7 +437,10 @@ def getStartPage():
     return start
 
 def getEndPage(start_page, dist=10):
-    print "chosen difficulty = " + str(dist)
+    # print "chosen difficulty = " + str(dist)
+    test_title = "McDonald's"
+    test_id = getPageID(test_title)
+    print test_id
 
     visited = set()
 
@@ -447,8 +486,9 @@ def getEndPage(start_page, dist=10):
 def tracePath(path, start, end):
     runner = end
     while runner != start:
-        print runner
+        print runner + ",",
         runner = path[runner]
+    print ""
 
 
 def getPageTitle(page_id):
@@ -462,7 +502,8 @@ def getPageTitle(page_id):
 
 def getPageID(page_title):
     cur = mysql.connection.cursor()
-    query = """ SELECT page_id FROM page WHERE page_title = \"%s\" AND page_namespace = 0""" % (page_title)
+    escaped_page_title = page_title.replace('"','\\"')
+    query = """ SELECT page_id FROM page WHERE page_title = \"%s\" AND page_namespace = 0""" % (escaped_page_title)
     cur.execute(query)
     result = cur.fetchone()
     if result is None:
