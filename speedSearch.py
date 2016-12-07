@@ -319,7 +319,7 @@ def fetch_page(page_title):
     valid = True
     try:
         cur = mysql.connection.cursor()
-        page_query = """ Select page_id from page where page_title = \"%s\" """ % (page_title)
+        page_query = """ Select page_id from page where page_title = \"%s\" AND page_namespace = 0""" % (page_title)
         cur.execute(page_query)
         print "fetched page " + str(page_title)
         print "fetched pages: " + str(cur.rowcount)
@@ -438,9 +438,6 @@ def getStartPage():
 
 def getEndPage(start_page, dist=10):
     # print "chosen difficulty = " + str(dist)
-    test_title = "McDonald's"
-    test_id = getPageID(test_title)
-    print test_id
 
     visited = set()
 
